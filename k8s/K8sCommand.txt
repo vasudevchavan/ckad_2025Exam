@@ -1,0 +1,15 @@
+kubectl get pods
+kubectl get svc
+kubectl get nodes
+alias kgscv="kubectl get svc"
+alias kgp="kubectl get pods"
+kubectl apply -f multi-route.yaml
+kgp -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name
+kubectl taint nodes gke-cluster-1-default-pool-708bf766-kqh3 key=value:NoSchedule
+kubectl delete pod webapp-multi-path-848b5779cd-ccgz2 webapp-multi-path-848b5779cd-k2zdf
+kubectl apply -f multi-route.yaml --record
+kubectl rollout status deployment.v1.apps/webapp-multi-path
+kubectl rollout history deployment.v1.apps/webapp-multi-path
+kubectl rollout history deployment/webapp-multi-path
+kubectl rollout undo deployment.v1.apps/webapp-multi-path
+kubectl rollout undo deployment/webapp-multi-path --to-revision=11
