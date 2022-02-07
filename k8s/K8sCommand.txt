@@ -1,6 +1,11 @@
 kubectl get pods
 kubectl get svc
 kubectl get nodes
+kubectl get deployment
+kubectl get events
+kubectl describe deployment example
+kubectl get events
+
 alias kgscv="kubectl get svc"
 alias kgp="kubectl get pods"
 kubectl apply -f multi-route.yaml
@@ -13,3 +18,6 @@ kubectl rollout history deployment.v1.apps/webapp-multi-path
 kubectl rollout history deployment/webapp-multi-path
 kubectl rollout undo deployment.v1.apps/webapp-multi-path
 kubectl rollout undo deployment/webapp-multi-path --to-revision=11
+kubectl exec -it webapp -- sh 
+kubectl expose deployment nginx --port=80 --type=LoadBalancer
+kubectl logs nginx-6799fc88d8-mgl5v
