@@ -8,15 +8,16 @@ metadata:
 spec:
   replicas: 3
   selector:
-    matchlabels:
+    matchLabels:
       app: nginx
   template:
     metadata:
       labels:
         app: nginx
-        env: dev
-    containers:
-    - name: webapp
-      image: nginx
-      ports:
-      - containerPort:80
+	env: dev
+    spec:
+     containers:
+     - name: webapp
+       image: nginx
+       ports:
+       - containerPort: 80
