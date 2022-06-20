@@ -14,9 +14,9 @@ function create_log_file(){
         #echo "delete file $file_name "
         then rm -rf $file_name
     else
-        echo "creating file"
+        echo "created file $file_name " >> ../$file_name 2>&1
     fi
-    touch file_name
+    touch $file_name
     start_date=`date`
     echo "$start_date \n" >> $file_name 2>&1
     echo "Created $file_name to capture logs" >> $file_name 2>&1
@@ -50,14 +50,14 @@ function docker_build_push(){
     docker build -t $2:$3 . >> ../$file_name 2>&1
     docker tag $2:$3 vasudevdchavan/$2:$3
     docker push vasudevdchavan/$2:$3  >> ../$file_name 2>&1
-    docker logout
+    docker logout >> ../$file_name 2>&1
     echo "Docker push sucessful" >> ../$file_name 2>&1
     [ $? -eq 0 ]  || kill -s TERM $TOP_PID
     echo "\n" >> ../$file_name 2>&1
 }
 #End
 
-#Function to deploy the application
+#Function to deploy the application to tanzu
 #Start
 function tanzu_deploy(){
     echo "We are deploying microserivce $1 with tag $2 with $3 replicas" >> ../$file_name 2>&1
@@ -71,8 +71,8 @@ function tanzu_deploy(){
 #End
 
 
-# Reading passed parameters
-# cicd.sh GITHUB_URL GITHUB_REPO_NAME DOCKERFILE TAG REPLICAS
+# Main of the prpgram for reading & validating passed parameters
+# Start
 if [ $# -eq 5 ];
     then 
         create_log_file $1 $2 $3 $4 $5
@@ -80,11 +80,13 @@ if [ $# -eq 5 ];
         docker_build_push $2 $3 $4
         tanzu_deploy $3 $4 $5
         cd ..
-        #sleep 10
+        sleep 10
         echo "Removing directory $2" >> $file_name 2>&1
         rm -rf $2
+        echo "Deployment completed sucessfully and logs are captured in $file_name"
 else
-    echo "Please pass valid parameters"
+    echo "Please pass valid parameters as below"
+    echo "sh cicd.sh GITHUB_URL GITHUB_REPO_NAME DOCKERFILE TAG REPLICAS"
 fi
-
+#End
 
