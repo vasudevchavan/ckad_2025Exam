@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: webapp-testing
+  strategy:
+    type: Recreate
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: webapp-testing
+    spec:
+      containers:
+      - image: sample:v1
+        name: webapp-testing
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: privatedockerlogin  
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-testing
+spec:
+  selector:
+    app: webapp-testing
+  ports:
+  - port: 80
+    targetPort: 8080
