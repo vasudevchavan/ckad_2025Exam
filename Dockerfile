@@ -1,2 +1,2 @@
-FROM nginx:latest
-echo "hello"
+FROM nginx
+COPY index.html /usr/share/nginx/html
