@@ -1,2 +1,3 @@
 Example to run this script:
+
 sh cicd.sh https://github.com/vasudevchavan/GKE.git GKE kafka-api-producer red 1
