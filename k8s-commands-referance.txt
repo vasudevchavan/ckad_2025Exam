@@ -1,0 +1,70 @@
+
+
+kubectl get pods
+kubectl get svc
+kubectl get nodes
+kubectl get deployment
+kubectl get events
+kubectl describe deployment example
+kubectl get events
+
+alias kgscv="kubectl get svc"
+alias kgp="kubectl get pods"
+kubectl apply -f multi-route.yaml
+kgp -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name
+kubectl taint nodes gke-cluster-1-default-pool-708bf766-kqh3 key=value:NoSchedule
+kubectl delete pod webapp-multi-path-848b5779cd-ccgz2 webapp-multi-path-848b5779cd-k2zdf
+kubectl apply -f multi-route.yaml --record
+kubectl rollout status deployment.v1.apps/webapp-multi-path
+kubectl rollout history deployment.v1.apps/webapp-multi-path
+kubectl rollout history deployment/webapp-multi-path
+kubectl rollout undo deployment.v1.apps/webapp-multi-path
+kubectl rollout undo deployment/webapp-multi-path --to-revision=11
+kubectl exec -it webapp -- sh 
+kubectl expose deployment nginx --port=80 --type=LoadBalancer
+kubectl logs nginx-6799fc88d8-mgl5v
+kubectl get nodes -o wide -o custom-columns=NAME:.metadata.name,InternalIP:.status.addresses[].address | grep controlplane
+kubectl get nodes -o wide | awk '{ if (NR==2) print $1 " " $6 done }'
+
+
+kubectl get pvc
+kubectl create secret generic mysql --from-literal=password=MYSECRETPASS
+
+
+kubectl create configmap nginx-index --from-file=/$PWD/index.html
+
+kubectl create secret generic cloudsql-instance-credentials --from-file=credentials.json=./sqlproxy.json
+kubectl patch deployment/<<deploymentname>> -p '{"spec":{"progressDeadlineSeconds":120'}}'
+kubectl run dig --image=tutum/dnsutils --restart=Never --rm=true --stdin --command -- dig cassandra.default.svc.cluster.local
+kubectl run testing --image=busybox --restart=Never --rm=true --stdin --command -- wget -O- $(kubectl get pod webapp -o custom-columns=:{.status.podIP} | tail -1):80
+kubectl get pods -A -o json | jq -r '.items[].spec.containers[].image'
+
+
+
+kubectl describe nodes | grep Taints | awk '{ if ( $2 == "<none>") print $1 ; }' | wc -l
+kubectl top  pods -l app=auth --sort-by=cpu -n web | awk '{ if (NR==2) print $1 }' 
+
+kubectl get pods -n web --as=system:serviceaccount:web:webapplicaiton
+
+kubectl drain acgk8s-worker1
+kubectl drain acgk8s-worker1 --ignore-daemonsets --delete-emptydir-data --force
+
+kubectl cordon <<node>>
+
+
+
+Encode and decode Secrets
+kubectl get secret kube-proxy-token-842cn -n kube-system -o json  | jq -r '.data | {namespace} | join (" ")' | base64 -d
+
+kubectl api-resources --namespaced=true | grep -e NAME -v | awk {'print $1'} | xargs -I{} kubectl get "{}" -A | grep -e NAME -v  > /opt/course/16/resources.txt
+
+
+----
+Taints and Tolerations:
+
+Adding a taint
+kubectl taint nodes node1 app=webapp:NoSchedule
+
+Removing taint
+kubectl taint nodes node1 app=blue:NoSchedule-
+
